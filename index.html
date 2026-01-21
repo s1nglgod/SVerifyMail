@@ -271,18 +271,8 @@
         async function updateDisplay() {
             const statusElement = document.getElementById('status');
             const codeElement = document.getElementById('oobCodeDisplay');
-            const linkDetails = document.getElementById('linkDetails');
+            codeElement.innerHTML = oobCode;
             const simulateBtn = document.getElementById('simulateBtn');
-            
-            let linkDetailsHTML = `
-                <p><strong>Тип операции:</strong> ${mode || 'Не указан'}</p>
-                <p><strong>Длина кода:</strong> ${oobCode ? oobCode.length + ' символов' : 'Нет'}</p>
-                <p><strong>API Key:</strong> ${apiKey ? 'Присутствует' : 'Отсутствует'}</p>
-                <p><strong>Язык:</strong> ${lang === 'ru' ? 'Русский' : lang}</p>
-                <p><strong>Время обработки:</strong> ${new Date().toLocaleString('ru-RU')}</p>
-            `;
-            
-            linkDetails.innerHTML = linkDetailsHTML;
             
             if (oobCode) {
                 statusElement.innerHTML = `
@@ -308,10 +298,6 @@
                 codeElement.textContent = 'Ошибка: параметр oobCode отсутствует в URL';
                 codeElement.style.backgroundColor = '#ffebee';
                 
-                linkDetails.innerHTML += `
-                    <p><strong>Статус:</strong> <span style="color: #f44336;">Невалидная ссылка</span></p>
-                    <p><strong>Рекомендация:</strong> Используйте полную ссылку из письма подтверждения</p>
-                `;
             }
         }
         
@@ -423,5 +409,4 @@
         });
     </script>
 </body>
-
 </html>
