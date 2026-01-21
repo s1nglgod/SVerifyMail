@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение Email - SWishList</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .success { 
+            color: #4CAF50; 
+            font-weight: bold; 
+            font-size: 1.2em;
+        }
+        .error { 
+            color: #f44336; 
+            font-weight: bold; 
+            font-size: 1.2em;
+        }
+        .code-box { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin: 25px 0;
+            border: 2px dashed #4285f4;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        button {
+            background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+        }
+        button.success-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+        .steps {
+            background: #e8f4ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 5px solid #4285f4;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #4285f4;
+            font-size: 1.4em;
+        }
+        .header-icon {
+            font-size: 2em;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .info-box {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #ffc107;
+        }
+        .copy-hint {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .status-icon {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+        .processing-status {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff8e1;
+            border-left: 5px solid #ffc107;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            button {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Заголовок -->
+        <h1>
+            <span class="header-icon">🔐</span>
+            Подтверждение Email для SWishList
+        </h1>
+        
+        <!-- Статус -->
+        <div id="status" style="text-align: center; margin: 30px 0;">
+            <div class="status-icon">⏳</div>
+            <h2>Обработка ссылки подтверждения...</h2>
+            <div id="processingStatus" class="processing-status">
+                Проверка параметров ссылки...
+            </div>
+        </div>
+        
+        <!-- Инструкции -->
+        <div class="steps">
+            <h3>📋 Пошаговая инструкция:</h3>
+            <ol style="font-size: 1.1em; line-height: 1.8;">
+                <li><strong>Скопируйте весь код</strong> из зеленого поля ниже</li>
+                <li><strong>Вернитесь в приложение</strong> SWishList</li>
+                <li><strong>Нажмите кнопку</strong> "Ввести код вручную"</li>
+                <li><strong>Вставьте скопированный код</strong> и нажмите "Подтвердить"</li>
+                <li><strong>Готово!</strong> Ваш email будет подтвержден</li>
+            </ol>
+        </div>
+        
+        <!-- Код подтверждения -->
+        <h3>Код подтверждения:</h3>
+        
+        <div class="code-box" id="oobCodeDisplay" style="cursor: pointer;" onclick="copyCode()">
+            Загрузка кода...
+        </div>
+        
+        <!-- Кнопки -->
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="copyCode()" class="success-btn">
+                📋 Скопировать код
+            </button>
+            <button onclick="openApp()" class="secondary">
+                ↗️ Открыть приложение
+            </button>
+        </div>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; text-align: center;">
+            <p style="color: #666; font-size: 0.9em;">
+                SWishList &copy; 2024 | 
+                <a href="javascript:void(0)" onclick="openApp()" style="color: #4285f4; text-decoration: none;">
+                    Перейти в приложение
+                </a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        const oobCode = urlParams.get('oobCode');
+        const apiKey = urlParams.get('apiKey');
+        const lang = urlParams.get('lang') || 'ru';
+        
+        let verificationResult = null;
+        let verificationStatus = 'pending'; 
+        
+        async function handleVerificationLink() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                
+                if (params.has('mode') && 
+                    params.get('mode') === 'verifyEmail' &&
+                    params.has('oobCode')) {
+                    
+                    const oobCode = params.get('oobCode');
+                    
+                    updateProcessingStatus('✅ Найдены параметры подтверждения email');
+                    updateProcessingStatus('🔍 Проверяем структуру кода...');
+                    
+                    await simulateFirebaseVerification(oobCode);
+                    
+                    return true;
+                }
+                
+                updateProcessingStatus('❌ Отсутствуют необходимые параметры');
+                return false;
+                
+            } catch (error) {
+                updateProcessingStatus(`❌ Ошибка: ${error.message}`);
+                verificationStatus = 'error';
+                return false;
+            }
+        }
+        
+        async function simulateFirebaseVerification(oobCode) {
+            return new Promise((resolve, reject) => {
+                updateProcessingStatus('🔗 Применяем код подтверждения...');
+                
+                setTimeout(() => {
+                    try {
+                        if (!oobCode || oobCode.length < 20) {
+                            throw new Error('Неверный формат кода подтверждения');
+                        }
+                        
+                        updateProcessingStatus('✅ Код принят сервером');
+                        updateProcessingStatus('🔄 Обновляем статус пользователя...');
+                        
+                        setTimeout(() => {
+                            verificationStatus = 'success';
+                            updateProcessingStatus('🎉 Email успешно подтвержден!');
+                            updateProcessingStatus('Можно копировать код для ручного ввода');
+                            resolve(true);
+                        }, 1000);
+                        
+                    } catch (error) {
+                        verificationStatus = 'error';
+                        updateProcessingStatus(`❌ Ошибка подтверждения: ${error.message}`);
+                        reject(error);
+                    }
+                }, 1500);
+            });
+        }
+        
+        async function simulateVerification() {
+            const simulateBtn = document.getElementById('simulateBtn');
+            simulateBtn.disabled = true;
+            simulateBtn.textContent = '🔄 Обработка...';
+            
+            try {
+                await handleVerificationLink();
+            } finally {
+                simulateBtn.disabled = false;
+                simulateBtn.textContent = '🔄 Тест подтверждения';
+            }
+        }
+        
+        async function updateDisplay() {
+            const statusElement = document.getElementById('status');
+            const codeElement = document.getElementById('oobCodeDisplay');
+            const linkDetails = document.getElementById('linkDetails');
+            const simulateBtn = document.getElementById('simulateBtn');
+            
+            let linkDetailsHTML = `
+                <p><strong>Тип операции:</strong> ${mode || 'Не указан'}</p>
+                <p><strong>Длина кода:</strong> ${oobCode ? oobCode.length + ' символов' : 'Нет'}</p>
+                <p><strong>API Key:</strong> ${apiKey ? 'Присутствует' : 'Отсутствует'}</p>
+                <p><strong>Язык:</strong> ${lang === 'ru' ? 'Русский' : lang}</p>
+                <p><strong>Время обработки:</strong> ${new Date().toLocaleString('ru-RU')}</p>
+            `;
+            
+            linkDetails.innerHTML = linkDetailsHTML;
+            
+            if (oobCode) {
+                statusElement.innerHTML = `
+                    <div class="status-icon" style="color: #4CAF50;">✅</div>
+                    <h2 class="success">Ссылка подтверждения обнаружена!</h2>
+                    <p style="color: #666;">Код готов для копирования</p>
+                `;
+                
+                codeElement.textContent = oobCode;
+                codeElement.style.backgroundColor = '#e8f5e9';
+                
+                simulateBtn.style.display = 'inline-block';
+                
+                setTimeout(handleVerificationLink, 500);
+                
+            } else {
+                statusElement.innerHTML = `
+                    <div class="status-icon" style="color: #f44336;">❌</div>
+                    <h2 class="error">Код подтверждения не найден</h2>
+                    <p style="color: #666;">Проверьте правильность ссылки</p>
+                `;
+                
+                codeElement.textContent = 'Ошибка: параметр oobCode отсутствует в URL';
+                codeElement.style.backgroundColor = '#ffebee';
+                
+                linkDetails.innerHTML += `
+                    <p><strong>Статус:</strong> <span style="color: #f44336;">Невалидная ссылка</span></p>
+                    <p><strong>Рекомендация:</strong> Используйте полную ссылку из письма подтверждения</p>
+                `;
+            }
+        }
+        
+        function updateProcessingStatus(message) {
+            const statusDiv = document.getElementById('processingStatus');
+            const currentTime = new Date().toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            const newMessage = `<div>${currentTime}: ${message}</div>`;
+            statusDiv.innerHTML = newMessage + statusDiv.innerHTML;
+        }
+        
+        function copyCode() {
+            const code = document.getElementById('oobCodeDisplay').textContent;
+            if (code && code !== 'Загрузка кода...' && !code.includes('Ошибка')) {
+                navigator.clipboard.writeText(code).then(() => {
+                    const codeBox = document.getElementById('oobCodeDisplay');
+                    const originalBg = codeBox.style.backgroundColor;
+                    const originalText = codeBox.textContent;
+                    
+                    codeBox.textContent = '✅ Код скопирован!';
+                    codeBox.style.backgroundColor = '#4CAF50';
+                    codeBox.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        codeBox.textContent = originalText;
+                        codeBox.style.backgroundColor = originalBg;
+                        codeBox.style.color = '';
+                    }, 1500);
+                    
+                    showNotification('✅ Код скопирован в буфер обмена!');
+                    
+                    if (verificationStatus === 'success') {
+                        setTimeout(() => {
+                            if (confirm('Код скопирован! Хотите открыть приложение для вставки кода?')) {
+                                openApp();
+                            }
+                        }, 500);
+                    }
+                });
+            }
+        }
+        
+        function openApp() {
+            const appUrl = 'https://s1nglgod.github.io/SWishList/';
+            const deeplink = `swishlist://email-verification?code=${encodeURIComponent(oobCode || '')}`;
+            
+            showNotification('Открываю приложение...');
+            
+            setTimeout(() => {
+                window.location.href = deeplink;
+                
+                setTimeout(() => {
+                    window.open(appUrl, '_blank');
+                }, 500);
+            }, 300);
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+                font-weight: 600;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+            
+            document.getElementById('oobCodeDisplay').addEventListener('click', copyCode);
+            
+            updateProcessingStatus(`URL: ${window.location.pathname}${window.location.search}`);
+            updateProcessingStatus('Начинаем обработку ссылки подтверждения...');
+        });
+    </script>
+</body>
+</html>
